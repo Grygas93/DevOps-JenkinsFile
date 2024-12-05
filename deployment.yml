@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cw2-server-deployment
+  labels:
+    app: cw2-server
+spec:
+  replicas: 3 # Scalling the deployment to 3 replicas
+  selector:
+    matchLabels:
+      app: cw2-server
+  template:
+    metadata:
+      labels:
+        app: cw2-server
+    spec:
+      containers:
+      - name: cw2-server
+        image: grygas93/cw2-server:1.0
+        ports:
+        - containerPort: 8080
+  strategy:
+    rollingUpdate:
+      maxSurge: 1  # Allow one additional replica during updates
+      maxUnavailable: 1  # Only one replica can be unavailable at a time
+    type: RollingUpdate
+
+
+
+
+
+
+
