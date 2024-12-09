@@ -10,7 +10,21 @@ pipeline {
                 echo 'Cloning repository...'
                 git branch: 'main', credentialsId: 'GitHubToken', url: 'https://github.com/Grygas93/DevOps-JenkinsFile.git'
             }
-        } 
+        }
+stage('Test Shell') {
+    steps {
+        sh '''
+            #!/bin/bash
+            echo "Shell test:"
+            whoami
+            echo "Current directory:"
+            pwd
+            echo "Files in directory:"
+            ls -al
+        '''
+    }
+}
+ 
         stage('Debug Workspace') {
             steps {
                 echo 'Checking workspace environment...'
