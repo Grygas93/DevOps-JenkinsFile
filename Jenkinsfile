@@ -1,10 +1,11 @@
 pipeline {
     agent any
     environment {
-        DOCKERHUB_CREDS = credentials('docker') // Twoje ID do DockerHub credentials
-        GITHUB_CREDS = credentials('GitHubToken') // Twoje ID do GitHub credentials
+        DOCKERHUB_CREDS = credentials('docker') // DockerHub credentials ID
+        GITHUB_CREDS = credentials('GitHubToken') // GitHub credentials ID
     }
     stages {
+        // 1. Clone the repository
         stage('Clone Repository') {
             steps {
                 echo 'Cloning repository...'
@@ -12,28 +13,30 @@ pipeline {
             }
         }
 
-stage('Test Docker') {
-    steps {
-        sh '''
-            docker run hello-world
-        '''
-    }
-}
+        // 2. Test Docker functionality
+        stage('Test Docker') {
+            steps {
+                echo 'Testing Docker...'
+                sh 'docker run hello-world'
+            }
+        }
 
-stage('Test Shell') {
-    steps {
-        sh '''
-            #!/bin/bash
-            echo "Shell test:"
-            whoami
-            echo "Current directory:"
-            pwd
-            echo "Files in directory:"
-            ls -al
-        '''
-    }
-}
- 
+        // 3. Verify shell environment
+        stage('Test Shell') {
+            steps {
+                echo 'Testing shell environment...'
+                sh '''
+                    echo "Shell test:"
+                    whoami
+                    echo "Current directory:"
+                    pwd
+                    echo "Files in directory:"
+                    ls -al
+                '''
+            }
+        }
+
+        // 4. Debug workspace
         stage('Debug Workspace') {
             steps {
                 echo 'Checking workspace environment...'
@@ -45,8 +48,9 @@ stage('Test Shell') {
                 '''
             }
         }
-        
-         stage('Docker Image Build') {
+
+        // 5. Build Docker Image
+        stage('Docker Image Build') {
             steps {
                 echo 'Building Docker Image...'
                 sh '''
@@ -56,6 +60,7 @@ stage('Test Shell') {
             }
         }
 
+        // 6. Test Docker Image
         stage('Test Docker Image') {
             steps {
                 echo 'Testing Docker Image...'
@@ -69,11 +74,12 @@ stage('Test Shell') {
             }
         }
 
+        // 7. Login to DockerHub
         stage('DockerHub Login') {
             steps {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'docker', passwordVariable: 'DOCKERHUB_CREDS_PSW', usernameVariable: 'DOCKERHUB_CREDS_USR')]) {
-                         sh '''
+                        sh '''
                             echo "Logging into DockerHub..."
                             echo $DOCKERHUB_CREDS_PSW | docker login -u $DOCKERHUB_CREDS_USR --password-stdin
                         '''
@@ -82,6 +88,7 @@ stage('Test Shell') {
             }
         }
 
+        // 8. Push Docker Image to DockerHub
         stage('DockerHub Image Push') {
             steps {
                 echo 'Pushing Docker Image to DockerHub...'
@@ -89,9 +96,10 @@ stage('Test Shell') {
             }
         }
 
+        // 9. Deploy application using Ansible
         stage('Deploy') {
             steps {
-                sshagent(['jenkins-ssh-key']) { // Twoje ID dla SSH credentials
+                sshagent(['jenkins-ssh-key']) { // SSH credentials ID
                     echo 'Deploying application using Ansible playbooks...'
                     sh '''
                         ansible-playbook -i /home/ubuntu/ansible_playbooks/hosts create_service_playbook.yml
@@ -103,3 +111,4 @@ stage('Test Shell') {
         }
     }
 }
+
