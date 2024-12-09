@@ -15,7 +15,7 @@ pipeline {
         stage('Docker Image Build') {
             steps {
                 echo 'Building Docker Image...'
-                sh 'docker build -t grygas93/cw2-server:1.0 .'
+                sh 'docker build -t grygas93/cw2-server:1.0 -f Dockerfile .'
                 echo 'Docker Image built successfully!'
             }
         }
