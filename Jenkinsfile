@@ -10,15 +10,28 @@ pipeline {
                 echo 'Cloning repository...'
                 git branch: 'main', credentialsId: 'GitHubToken', url: 'https://github.com/Grygas93/DevOps-JenkinsFile.git'
             }
+        } 
+        stage('Debug Workspace') {
+            steps {
+                echo 'Checking workspace environment...'
+                sh '''
+                    echo "Current directory:"
+                    pwd
+                    echo "Files in the directory:"
+                    ls -al
+                '''
+            }
         }
         
-        stage('Docker Image Build') {
-           steps {
-              sh 'ls -al'
-              sh 'pwd'
-              sh 'docker build -t grygas93/cw2-server:1.0 -f Dockerfile .'
-    }
-}
+         stage('Docker Image Build') {
+            steps {
+                echo 'Building Docker Image...'
+                sh '''
+                    export DOCKER_BUILDKIT=1
+                    docker build -t grygas93/cw2-server:1.0 -f Dockerfile .
+                '''
+            }
+        }
 
         stage('Test Docker Image') {
             steps {
@@ -37,7 +50,10 @@ pipeline {
             steps {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'docker', passwordVariable: 'DOCKERHUB_CREDS_PSW', usernameVariable: 'DOCKERHUB_CREDS_USR')]) {
-                        sh 'echo $DOCKERHUB_CREDS_PSW | docker login -u $DOCKERHUB_CREDS_USR --password-stdin'
+                         sh '''
+                            echo "Logging into DockerHub..."
+                            echo $DOCKERHUB_CREDS_PSW | docker login -u $DOCKERHUB_CREDS_USR --password-stdin
+                        '''
                     }
                 }
             }
@@ -45,6 +61,7 @@ pipeline {
 
         stage('DockerHub Image Push') {
             steps {
+                echo 'Pushing Docker Image to DockerHub...'
                 sh 'docker push grygas93/cw2-server:1.0'
             }
         }
@@ -52,6 +69,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 sshagent(['jenkins-ssh-key']) { // Twoje ID dla SSH credentials
+                    echo 'Deploying application using Ansible playbooks...'
                     sh '''
                         ansible-playbook -i /home/ubuntu/ansible_playbooks/hosts create_service_playbook.yml
                         ansible-playbook -i /home/ubuntu/ansible_playbooks/hosts deploy_image_playbook.yml
