@@ -13,12 +13,12 @@ pipeline {
         }
         
         stage('Docker Image Build') {
-            steps {
-                echo 'Building Docker Image...'
-                sh 'docker build -t grygas93/cw2-server:1.0 -f Dockerfile .'
-                echo 'Docker Image built successfully!'
-            }
-        }
+           steps {
+              sh 'ls -al'
+              sh 'pwd'
+              sh 'docker build -t grygas93/cw2-server:1.0 -f Dockerfile .'
+    }
+}
 
         stage('Test Docker Image') {
             steps {
