@@ -3,6 +3,7 @@ pipeline {
     environment {
         DOCKERHUB_CREDS = credentials('docker') // DockerHub credentials ID
         GITHUB_CREDS = credentials('GitHubToken') // GitHub credentials ID
+        JENKINS_DEBUG = 'true'
     }
     stages {
         // 1. Clone the repository
@@ -12,7 +13,6 @@ pipeline {
                 git branch: 'main', credentialsId: 'GitHubToken', url: 'https://github.com/Grygas93/DevOps-JenkinsFile.git'
             }
         }
-
  
         stage('Test Simple Shell') {
             steps {
