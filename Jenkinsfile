@@ -11,6 +11,15 @@ pipeline {
                 git branch: 'main', credentialsId: 'GitHubToken', url: 'https://github.com/Grygas93/DevOps-JenkinsFile.git'
             }
         }
+
+stage('Test Docker') {
+    steps {
+        sh '''
+            docker run hello-world
+        '''
+    }
+}
+
 stage('Test Shell') {
     steps {
         sh '''
