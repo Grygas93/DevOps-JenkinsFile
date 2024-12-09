@@ -12,8 +12,8 @@ pipeline {
                 git branch: 'main', credentialsId: 'GitHubToken', url: 'https://github.com/Grygas93/DevOps-JenkinsFile.git'
             }
         }
-}
-    stages {
+
+ 
         stage('Test Simple Shell') {
             steps {
                 sh 'echo "Testing simple shell command"'
