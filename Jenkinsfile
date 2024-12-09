@@ -4,6 +4,7 @@ pipeline {
         DOCKERHUB_CREDS = credentials('docker') // DockerHub credentials ID
         GITHUB_CREDS = credentials('GitHubToken') // GitHub credentials ID
         JENKINS_DEBUG = 'true'
+	SHELL_PATH = '/bin/bash' // Lub '/bin/sh'
     }
     stages {
         // 1. Clone the repository
@@ -16,7 +17,7 @@ pipeline {
  
         stage('Test Simple Shell') {
             steps {
-                sh 'echo "Testing simple shell command"'
+                sh '#!/bin/bash\necho "Testuje shell w pipeline"'
             }
         }
 
