@@ -13,6 +13,13 @@ pipeline {
             }
         }
 
+    stages {
+        stage('Test Simple Shell') {
+            steps {
+                sh 'echo "Testing simple shell command"'
+            }
+        }
+
         // 2. Test Docker functionality
         stage('Test Docker') {
             steps {
