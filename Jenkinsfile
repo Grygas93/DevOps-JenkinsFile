@@ -1,5 +1,5 @@
 pipeline {
-    agent { laber 'docker-agent' }
+    agent { label 'docker-agent' }
     environment {
         DOCKERHUB_CREDS = credentials('docker') // DockerHub credentials ID
         GITHUB_CREDS = credentials('GitHubToken') // GitHub credentials ID
