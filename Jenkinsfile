@@ -15,7 +15,7 @@ pipeline {
         stage('Docker Image Build') {
             steps {
                 echo 'Building Docker Image...'
-                sh 'docker build -t grygas93/cw2-server:${BUILD_NUMBER} .'
+                sh 'docker build -t grygas93/cw2-server:1.0 .'
                 echo 'Docker Image built successfully!'
             }
         }
@@ -24,8 +24,8 @@ pipeline {
             steps {
                 echo 'Testing Docker Image...'
                 sh '''
-                    docker image inspect grygas93/cw2-server:${BUILD_NUMBER}
-                    docker run --name test-container -p 8081:8080 -d grygas93/cw2-server:${BUILD_NUMBER}
+                    docker image inspect grygas93/cw2-server:1.0
+                    docker run --name test-container -p 8081:8080 -d grygas93/cw2-server:1.0
                     docker ps
                     docker stop test-container
                     docker rm test-container
@@ -45,7 +45,7 @@ pipeline {
 
         stage('DockerHub Image Push') {
             steps {
-                sh 'docker push grygas93/cw2-server:${BUILD_NUMBER}'
+                sh 'docker push grygas93/cw2-server:1.0'
             }
         }
 
