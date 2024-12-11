@@ -8,7 +8,7 @@ pipeline {
         stage('Clone Repository') {
             steps {
                 echo 'Cloning repository...'
-                git branch: 'main', credentialsId: 'GitHubToken', url: 'https://github.com/Grygas93/your-repo-name.git'
+                git branch: 'main', credentialsId: 'GitHubToken', url: 'https://github.com/Grygas93/DevOps-JenkinsFile.git'
             }
         }
         
