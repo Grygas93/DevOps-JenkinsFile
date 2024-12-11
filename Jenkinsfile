@@ -52,11 +52,13 @@ pipeline {
         stage('Deploy') {
             steps {
                 sshagent(['jenkins-ssh-key']) { // Twoje ID dla SSH credentials
-                    sh '''
-                        ansible-playbook -i /home/ubuntu/ansible_playbooks/hosts create_service_playbook.yml
-                        ansible-playbook -i /home/ubuntu/ansible_playbooks/hosts deploy_image_playbook.yml
-                        ansible-playbook -i /home/ubuntu/ansible_playbooks/hosts scale_deployment_playbook.yml
-                    '''
+                    echo 'Deploying application using Ansible playbooks...'
+            sh '''
+                ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_ed25519 ubuntu@172.31.88.89 \
+                "ansible-playbook -i /home/ubuntu/ansible_playbooks/hosts /home/ubuntu/ansible_playbooks/create_service_playbook.yml &&
+                 ansible-playbook -i /home/ubuntu/ansible_playbooks/hosts /home/ubuntu/ansible_playbooks/deploy_image_playbook.yml &&
+                 ansible-playbook -i /home/ubuntu/ansible_playbooks/hosts /home/ubuntu/ansible_playbooks/scale_deployment_playbook.yml"
+            '''
                 }
             }
         }
